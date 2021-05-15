@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 14 08:04:16 2021
+Created on Fri May 14 14:35:14 2021
 
 @author: RISHBANS
 """
@@ -8,9 +8,9 @@ Created on Fri May 14 08:04:16 2021
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-dataset = pd.read_csv("HR.csv")
-X = dataset.iloc[:, [0,1]].values
-y = dataset.iloc[:, 7].values
+dataset = pd.read_csv("Social_Network_Ads.csv")
+X = dataset.iloc[:, [2,3]].values
+y = dataset.iloc[:, 4].values
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
@@ -27,14 +27,8 @@ from sklearn.linear_model import LogisticRegression
 #in case of non scaled data use max_iter=400
 lr = LogisticRegression()
 lr.fit(X_train, y_train)
-y_pred = lr.predict(X_test)
-print(lr.score(X_test,y_test))
 
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
-
-print(cm)
-
+lr.score(X_test,y_test)
 
 from matplotlib.colors import ListedColormap
 #Define Variables
@@ -69,7 +63,3 @@ plt.ylabel('Independent Variable 2')
 plt.legend()
 
 plt.show()
-
-
-
-
