@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 dataset = pd.read_csv("HR.csv")
-X = dataset.iloc[:, [0,1]].values
+X = dataset.iloc[:, :-1].values
 y = dataset.iloc[:, 7].values
 
 # Splitting the dataset into the Training set and Test set
@@ -35,41 +35,28 @@ cm = confusion_matrix(y_test, y_pred)
 
 print(cm)
 
-
-from matplotlib.colors import ListedColormap
-#Define Variables
-clf = lr
-h = 0.1
-X_plot, z_plot = X_train, y_train 
-
-#Standard Template to draw graph
-x_min, x_max = X_plot[:, 0].min() - 1, X_plot[:, 0].max() + 1
-y_min, y_max = X_plot[:, 1].min() - 1, X_plot[:, 1].max() + 1
-xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                     np.arange(y_min, y_max, h))
+#Applying K Fold
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+# K Fold =3
+kfold = KFold(n_splits=3, random_state=7)
+#.ravel will convert that array shape to (n, )
+result = cross_val_score(lr, X_train, y_train.ravel(), cv=kfold, scoring='accuracy')
+print(result.mean())
 
 
-# Plot the decision boundary. For that, we will assign a color to each
-# point in the mesh
-Z = clf.predict(np.array([xx.ravel(), yy.ravel()]).T)
-Z = Z.reshape(xx.shape)
-plt.contourf(xx, yy, Z,
-             alpha = 0.7, cmap = ListedColormap(('blue', 'red')))
+#Applying Grid Search
+from sklearn.model_selection import GridSearchCV
+import time
+dual=[True,False]
+max_iter=[100,110,120,130,140]
+C = [1.0,1.5,2.0,2.5]
+param_grid = dict(dual=dual,max_iter=max_iter,C=C)
+lr = LogisticRegression(penalty='l2')
+grid = GridSearchCV(estimator=lr, param_grid=param_grid, cv = 3, n_jobs=-1)
 
-
-for i, j in enumerate(np.unique(z_plot)):
-    plt.scatter(X_plot[z_plot == j, 0], X_plot[z_plot == j, 1],
-                c = ['blue', 'red'][i], cmap = ListedColormap(('blue', 'red')), label = j)
-   #X[:, 0], X[:, 1] 
-plt.xlim(xx.min(), xx.max())
-plt.ylim(yy.min(), yy.max())
-plt.title('Logistic Regression')
-plt.xlabel('Independent Variable 1')
-plt.ylabel('Independent Variable 2')
-plt.legend()
-
-plt.show()
-
-
-
-
+start_time = time.time()
+grid_result = grid.fit(X_train, y_train.ravel())
+# Summarize results
+print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+print("Execution time: " + str((time.time() - start_time)) + ' ms')
