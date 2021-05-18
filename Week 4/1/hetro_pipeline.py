@@ -39,7 +39,7 @@ int_pipeline = make_pipeline(MinMaxScaler(), SelectKBest(k=3,score_func=f_classi
 preprocessor = make_column_transformer(
               (obj1_pipeline, ['salary']),
               (obj2_pipeline, ['dept']),
-              (int_pipeline,int_data.columns),
+              (int_pipeline,['number_project', 'average_montly_hours', 'time_spend_company']),
               remainder='passthrough'
 )
 
