@@ -28,14 +28,17 @@ from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.compose import make_column_transformer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OneHotEncoder
 
 #cat_pipeline = make_pipeline(SimpleImputer(),OrdinalEncoder())
 #SimpleImpter is for handling missing data in pipeline
 
-obj_pipeline = make_pipeline(OrdinalEncoder())
+obj1_pipeline = make_pipeline(OrdinalEncoder())
+obj2_pipeline = make_pipeline(OneHotEncoder())
 int_pipeline = make_pipeline(MinMaxScaler(), SelectKBest(k=3,score_func=f_classif))
 preprocessor = make_column_transformer(
-              (obj_pipeline,obj_data.columns),
+              (obj1_pipeline, ['salary']),
+              (obj2_pipeline, ['dept']),
               (int_pipeline,int_data.columns),
               remainder='passthrough'
 )
@@ -52,7 +55,7 @@ print(pipeline.steps[0][1].transformers)
 
 #applying grid search
 from sklearn.model_selection import GridSearchCV
-params = {'columntransformer__pipeline-2__selectkbest__k':[2,3,4,5]}
+params = {'columntransformer__pipeline-3__selectkbest__k':[2,3]}
 gs = GridSearchCV(pipeline, param_grid=params, n_jobs=4, cv=5)
 gs.fit(X_train, y_train)
 print(gs.best_params_)
