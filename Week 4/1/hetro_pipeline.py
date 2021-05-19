@@ -22,13 +22,12 @@ float_data = X.select_dtypes(include=['float'])
 int_data = X.select_dtypes(include=['int64'])
 
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler
+from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.compose import make_column_transformer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import OneHotEncoder
 
 #cat_pipeline = make_pipeline(SimpleImputer(),OrdinalEncoder())
 #SimpleImpter is for handling missing data in pipeline
