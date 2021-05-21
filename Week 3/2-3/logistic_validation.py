@@ -53,7 +53,7 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 
 # K Fold =3
-kfold = KFold(n_splits=5, random_state=7)
+kfold = KFold(n_splits=3, random_state=7)
 
 #.ravel will convert that array shape to (n, )
 result = cross_val_score(lr_model, X_train, y_train.ravel(), cv=kfold, scoring='accuracy')

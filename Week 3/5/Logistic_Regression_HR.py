@@ -60,3 +60,73 @@ grid_result = grid.fit(X_train, y_train.ravel())
 # Summarize results
 print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
 print("Execution time: " + str((time.time() - start_time)) + ' ms')
+
+
+
+#Using Pipeline
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+digit_pipeline = make_pipeline(StandardScaler(), LogisticRegression())
+
+digit_pipeline.fit(X_train, y_train)
+y_pred = digit_pipeline.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test, y_pred))
+
+#A negative coefficient means that higher value of the corresponding feature pushes the classification more towards the negative class
+print(digit_pipeline.steps[1][1].coef_)
+#Find most influential feature
+print(np.std(X_train, 0)*digit_pipeline.steps[1][1].coef_)
+
+from sklearn.feature_selection import SelectKBest, f_classif
+digit_pipeline = make_pipeline(StandardScaler(), SelectKBest(k=3, score_func=f_classif),
+                               LogisticRegression(C=0.7, max_iter= 100))
+
+print(digit_pipeline)
+
+digit_pipeline.fit(X_train, y_train)
+y_pred = digit_pipeline.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+print(accuracy_score(y_test, y_pred))
+
+from sklearn.model_selection import GridSearchCV
+params = {'selectkbest__k': [1,2 ,3 ,4,5,6], 
+          'logisticregression__C': [0.7, 1, 1.3, 1.5],
+          'logisticregression__max_iter': [100,120, 140, 160]}
+
+gs = GridSearchCV(digit_pipeline, param_grid=params, cv = 3)
+
+gs.fit(X_train, y_train)
+
+print(gs.best_params_)
+print(gs.best_score_)
+y_pred = gs.predict(X_test)
+print(y_pred)
+
+
+
+import numpy as np    
+from sklearn.linear_model import LogisticRegression
+
+x1 = np.random.randn(100)
+x2 = 4*np.random.randn(100)
+x3 = 0.5*np.random.randn(100)
+y = (3 + x1 + x2 + x3 + 0.2*np.random.randn()) > 0
+X = np.column_stack([x1, x2, x3])
+
+m = LogisticRegression()
+m.fit(X, y)
+
+# The estimated coefficients will all be around 1:
+print(m.coef_)
+
+# Those values, however, will show that the second parameter
+# is more influential
+print(np.std(X, 0)*m.coef_)
+
+
