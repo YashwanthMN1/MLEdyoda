@@ -4,7 +4,7 @@ Created on Sat May 22 20:44:03 2021
 
 @author: RISHBANS
 """
-#https://jorisvandenbossche.github.io/blog/2018/05/28/scikit-learn-columntransformer/
+
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer, make_column_transformer
 from sklearn.pipeline import make_pipeline
